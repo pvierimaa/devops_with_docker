@@ -8,7 +8,7 @@ WORKDIR /usr/src/app
 COPY . .
 
 # Set environment variable
-ENV REQUEST_ORIGIN=http://localhost:5000
+ENV REQUEST_ORIGIN=http://localhost
 
 # Build the Go project
 RUN go build

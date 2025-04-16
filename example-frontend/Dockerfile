@@ -8,7 +8,7 @@ WORKDIR /usr/src/app
 COPY . .
 
 # Set environment variable
-ENV REACT_APP_BACKEND_URL=http://localhost:8080
+ENV REACT_APP_BACKEND_URL=http://localhost/api
 
 # Install the dependencies
 RUN npm install
