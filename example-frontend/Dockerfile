@@ -1,30 +1,41 @@
-# Use the official Node.js image (LTS version 16.x)
-FROM node:16
+# --- Stage 1: Build stage ---
+FROM node:16-alpine AS build-stage
 
-# Set the working directory inside the container
 WORKDIR /usr/src/app
-
-# Copy the application code
-COPY . .
-
-# Set environment variable
+    
+# Set environment variable for backend API URL
 ENV REACT_APP_BACKEND_URL=http://localhost/api
+    
+# Copy the source code into the container
+COPY . .
+    
+# Install dependencies and build the React app
+RUN npm install && npm run build
+    
+# --- Stage 2: Production image ---
+FROM node:16-alpine
+    
+WORKDIR /usr/src/app
+    
+# Install serve to serve static files
+RUN npm install -g serve && adduser -D appuser
+    
+# Copy the build folder from the builder stage
+COPY --from=build-stage /usr/src/app/build ./build
+    
+# Change ownership of the build folder
+RUN chown -R appuser ./build
 
-# Install the dependencies
-RUN npm install
+# Switch to a non-root user
+USER appuser
 
-# Build the static files for production
-RUN npm run build
-
-# Install the serve package globally to serve static files
-RUN npm install -g serve
-
-# Expose port 5000
+# Expose the port that the app will run on
 EXPOSE 5000
-
-# Serve the application using the build folder and listen on port 5000
+    
+# Serve the static files with serve
 CMD ["serve", "-s", "build", "-l", "5000"]
 
 # Run commands:
 # docker build -t example-frontend .
-# docker run -p 5000:5000 example-frontend
+# Go to the root of the project:
+# docker compose up

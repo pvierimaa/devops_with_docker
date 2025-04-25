@@ -3,7 +3,7 @@ services:
     image: example-frontend
     container_name: example-frontend
     environment:
-      - REACT_APP_BACKEND_URL=http://http://localhost/api
+      - REACT_APP_BACKEND_URL=http://localhost/api
     restart: unless-stopped
     depends_on:
       - backend
